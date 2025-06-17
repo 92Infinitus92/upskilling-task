@@ -52,8 +52,8 @@ This project demonstrates a complete authentication flow using:
 
 ```bash
 cd siwe-auth-backend
-npm install
-npm run start:dev
+pnpm install
+pnpm run start:dev
 ```
 
 The server will be available at `http://localhost:3000`.
