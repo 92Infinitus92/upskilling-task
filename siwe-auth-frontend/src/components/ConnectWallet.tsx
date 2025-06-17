@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+
 import {
   useAccount,
   useConnect,
@@ -8,7 +9,7 @@ import {
 } from 'wagmi';
 import { SiweMessage } from 'siwe';
 
-const BACKEND_URL = 'http://localhost:3000'; // Your NestJS backend URL
+import { BACKEND_URL } from '../helpers/constants';
 
 export function ConnectWallet() {
   const { address, isConnected } = useAccount();
@@ -96,9 +97,6 @@ export function ConnectWallet() {
       }
 
       const { accessToken } = await siweResponse.json();
-
-      // Log cookies after login to debug
-      console.log('Cookies after login:', document.cookie);
 
       localStorage.setItem('accessToken', accessToken);
       setIsAuthenticated(true);

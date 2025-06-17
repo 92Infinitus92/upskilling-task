@@ -13,6 +13,5 @@ export const config = createConfig({
     [mainnet.id]: http(),
     [sepolia.id]: http(),
   },
-  // Connectors will be added later when we implement the actual wallet connection logic.
-  // For now, this basic config allows Wagmi to read data if a wallet is already connected.
+  // here we can add different connectors
 });

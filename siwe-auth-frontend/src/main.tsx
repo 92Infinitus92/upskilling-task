@@ -1,11 +1,13 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import './index.css';
-import App from './App.tsx';
-import { config } from './config';
+
 import { QueryClient } from '@tanstack/react-query';
 import { QueryClientProvider } from '@tanstack/react-query';
+
 import { WagmiProvider } from 'wagmi';
+import { config } from './config';
+import App from './App.tsx';
+import './index.css';
 
 const queryClient = new QueryClient();
 

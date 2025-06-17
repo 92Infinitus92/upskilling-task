@@ -1,10 +1,11 @@
-import './App.css';
 import { ConnectWallet } from './components/ConnectWallet';
-import { useTokenRefresh } from './hooks/useTokenRefresh';
 import { TestAuth } from './components/TestAuth';
 
+import { useTokenRefresh } from './hooks/useTokenRefresh';
+
+import './App.css';
+
 function App() {
-  // Call the hook to set up automatic token refresh
   const { refreshError } = useTokenRefresh();
 
   return (

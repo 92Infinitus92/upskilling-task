@@ -1,24 +1,21 @@
 import { useState } from 'react';
 
-const BACKEND_URL = 'http://localhost:3000';
+import { BACKEND_URL } from '../helpers/constants';
 
 export function TestAuth() {
   const [authStatus, setAuthStatus] = useState<string>('');
   const [lastRequestTime, setLastRequestTime] = useState<string>('');
 
-  // Function to make an authenticated request
   const testAuthRequest = async () => {
     try {
       setLastRequestTime(new Date().toLocaleTimeString());
 
-      // Get the current token
       const token = localStorage.getItem('accessToken');
       if (!token) {
         setAuthStatus('No token available - please log in first');
         return;
       }
 
-      // Make an authenticated request
       const response = await fetch(`${BACKEND_URL}/auth/test-auth`, {
         method: 'GET',
         headers: {
