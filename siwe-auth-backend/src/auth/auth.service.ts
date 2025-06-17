@@ -1,16 +1,11 @@
 import {
   Injectable,
-  BadRequestException,
   UnauthorizedException,
   InternalServerErrorException,
 } from '@nestjs/common';
-import { SignupDto } from './dtos/signup.dto';
-// import * as bcrypt from 'bcrypt';
-import { LoginDto } from './dtos/login.dto';
 import { JwtService } from '@nestjs/jwt';
 import { StorageService } from './storage/storage.service';
 import { User } from './schemas/user.schema';
-import { RefreshToken } from './schemas/refresh-token.schema';
 import { RefreshTokenService } from './refresh-token/refresh-token.service';
 import { generateNonce, SiweMessage } from 'siwe';
 
@@ -66,7 +61,7 @@ export class AuthService {
   // }
 
   async generateToken(userId: string) {
-    const accessToken = this.jwtService.sign({ userId }, { expiresIn: '30s' });
+    const accessToken = this.jwtService.sign({ userId }, { expiresIn: '30m' });
 
     const refreshToken =
       await this.refreshTokenService.createRefreshToken(userId);

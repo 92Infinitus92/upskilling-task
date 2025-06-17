@@ -18,8 +18,8 @@ This project demonstrates a complete authentication flow using:
 
 ### Authentication
 
-- Sign in with Ethereum wallet (Metamask, WalletConnect, etc.)
-- JWT-based authentication with short-lived access tokens (30 seconds)
+- Sign in with Ethereum wallet (Metamask)
+- JWT-based authentication with short-lived access tokens (30 minutes)
 - Secure HTTP-only cookies for refresh tokens
 - Automatic background token refresh mechanism
 - Single-use refresh tokens for enhanced security

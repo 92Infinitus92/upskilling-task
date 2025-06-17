@@ -10,8 +10,8 @@ export class RefreshTokenService {
   async createRefreshToken(userId: string): Promise<string> {
     const tokenString = randomBytes(40).toString('hex');
     const expiryDate = new Date();
-    // expiryDate.setDate(expiryDate.getDate() + 30);
-    expiryDate.setSeconds(expiryDate.getSeconds() + 60);
+    expiryDate.setDate(expiryDate.getDate() + 30);
+    // expiryDate.setSeconds(expiryDate.getSeconds() + 60);
 
     const refreshToken = new RefreshToken();
     refreshToken.token = tokenString;
