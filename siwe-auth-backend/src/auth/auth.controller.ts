@@ -116,4 +116,25 @@ export class AuthController {
       timestamp: new Date().toISOString(),
     };
   }
+
+  @Post('siwe-message')
+  async getSiweMessage(
+    @Body()
+    body: {
+      address: string;
+      chainId: number;
+      domain: string;
+      uri: string;
+    },
+  ) {
+    this.logger.log('Generating SIWE message...');
+    const result = await this.authService.generateSiweMessage(
+      body.address,
+      body.chainId,
+      body.domain,
+      body.uri,
+      'Sign in with Ethereum to the app.',
+    );
+    return result;
+  }
 }

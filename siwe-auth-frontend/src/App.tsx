@@ -1,5 +1,6 @@
 import { ConnectWallet } from './components/ConnectWallet';
 import { TestAuth } from './components/TestAuth';
+import { SecurityTest } from './components/SecurityTest';
 
 import { useTokenRefresh } from './hooks/useTokenRefresh';
 
@@ -18,6 +19,8 @@ function App() {
       )}
 
       <TestAuth />
+
+      <SecurityTest />
     </div>
   );
 }

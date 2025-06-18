@@ -93,19 +93,42 @@ export class AuthService {
     return nonce;
   }
 
+  async generateSiweMessage(
+    address: string,
+    chainId: number,
+    domain: string,
+    uri: string,
+    statement: string,
+  ) {
+    const nonce = generateNonce();
+    const siweMessage = new SiweMessage({
+      domain,
+      address,
+      statement,
+      uri,
+      version: '1',
+      chainId,
+      nonce,
+      issuedAt: new Date().toISOString(),
+    });
+    const siweMessageString = siweMessage.prepareMessage();
+    await this.storageService.saveNonceWithMessage(nonce, siweMessageString);
+    return { message: siweMessageString, nonce };
+  }
+
   async siweLogin(siweLoginDto: { message: string; signature: string }) {
     const { message, signature } = siweLoginDto;
-    const siweMessage = new SiweMessage(message);
 
     try {
-      const fields = await siweMessage.verify({ signature });
+      const fields = await new SiweMessage(message).verify({ signature });
 
-      const nonceIsValid = await this.storageService.validateNonce(
+      const messageIsValid = await this.storageService.validateNonceAndMessage(
         fields.data.nonce,
+        message,
       );
 
-      if (!nonceIsValid) {
-        throw new UnauthorizedException('Invalid nonce');
+      if (!messageIsValid) {
+        throw new UnauthorizedException('Invalid or tampered message');
       }
 
       const { address } = fields.data;

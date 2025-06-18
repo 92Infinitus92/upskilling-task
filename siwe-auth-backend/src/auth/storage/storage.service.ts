@@ -7,6 +7,7 @@ export class StorageService {
   private storage: Map<string, User> = new Map();
   private refreshTokenStorage: Map<string, RefreshToken> = new Map();
   private nonces: Set<string> = new Set();
+  private siweMessages: Map<string, string> = new Map();
   private lastId = 0;
 
   private generateId(): string {
@@ -62,10 +63,30 @@ export class StorageService {
     this.nonces.add(nonce);
   }
 
+  async saveNonceWithMessage(nonce: string, message: string): Promise<void> {
+    this.nonces.add(nonce);
+    this.siweMessages.set(nonce, message);
+  }
+
   async validateNonce(nonce: string): Promise<boolean> {
     if (this.nonces.has(nonce)) {
       this.nonces.delete(nonce);
       return true;
+    }
+    return false;
+  }
+
+  async validateNonceAndMessage(
+    nonce: string,
+    message: string,
+  ): Promise<boolean> {
+    if (this.nonces.has(nonce)) {
+      const storedMessage = this.siweMessages.get(nonce);
+
+      this.nonces.delete(nonce);
+      this.siweMessages.delete(nonce);
+
+      return storedMessage === message;
     }
     return false;
   }

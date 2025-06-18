@@ -7,7 +7,6 @@ import {
   useSignMessage,
   useChainId,
 } from 'wagmi';
-import { SiweMessage } from 'siwe';
 
 import { BACKEND_URL } from '../helpers/constants';
 
@@ -59,29 +58,22 @@ export function ConnectWallet() {
     setError(null);
 
     try {
-      const nonceResponce = await fetch(`${BACKEND_URL}/auth/nonce`, {
+      const messageResponse = await fetch(`${BACKEND_URL}/auth/siwe-message`, {
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          address,
+          chainId,
+          domain: window.location.host,
+          uri: window.location.origin,
+        }),
       });
 
-      if (!nonceResponce.ok) {
-        throw new Error('Failed to fetch nonce');
-      }
-      const { nonce } = await nonceResponce.json();
+      const { message } = await messageResponse.json();
 
-      const message = new SiweMessage({
-        domain: window.location.host,
-        address,
-        statement: 'Sign in with Ethereum to the app.',
-        uri: window.location.origin,
-        version: '1',
-        chainId,
-        nonce,
-        issuedAt: new Date().toISOString(),
-      });
-
-      const preparedMessage = message.prepareMessage();
-
-      const signature = await signMessageAsync({ message: preparedMessage });
+      const signature = await signMessageAsync({ message });
 
       const siweResponse = await fetch(`${BACKEND_URL}/auth/siwe`, {
         method: 'POST',
@@ -89,28 +81,24 @@ export function ConnectWallet() {
           'Content-Type': 'application/json',
         },
         credentials: 'include',
-        body: JSON.stringify({ message: preparedMessage, signature }),
+        body: JSON.stringify({ message, signature }),
       });
 
       if (!siweResponse.ok) {
-        throw new Error('Failed to authenticate');
+        throw new Error('Failed to sign in with Ethereum');
       }
 
       const { accessToken } = await siweResponse.json();
 
       localStorage.setItem('accessToken', accessToken);
-      setIsAuthenticated(true);
-    } catch (error) {
-      console.error('Sign-in error', error);
-      setError(
-        error instanceof Error
-          ? error.message
-          : 'An unknown error occurred during sign-in.'
-      );
 
+      setIsAuthenticated(true);
+      setIsLoading(false);
+    } catch (error) {
+      console.error('Login error', error);
+      setError('Failed to sign in with Ethereum');
       localStorage.removeItem('accessToken');
       setIsAuthenticated(false);
-    } finally {
       setIsLoading(false);
     }
   };
